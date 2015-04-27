@@ -1,4 +1,4 @@
-# Demo server code for MP3
+# Skeleton server for Helpen Group project
 You should be able to do
 `npm install` and `nodemon server.js`
 
