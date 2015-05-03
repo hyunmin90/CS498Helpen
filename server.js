@@ -2,11 +2,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var Llama = require('./models/llama');
+var helpenAPI = require('./models/helpenAPI');
 var bodyParser = require('body-parser');
 var router = express.Router();
 
-//replace this with your Mongolab URL
-mongoose.connect('mongodb://localhost/mp3');
 
 // Create our Express application
 var app = express();
@@ -21,6 +20,8 @@ var allowCrossDomain = function(req, res, next) {
   next();
 };
 app.use(allowCrossDomain);
+
+
 
 // Use the body-parser package in our application
 app.use(bodyParser.urlencoded({
@@ -45,6 +46,32 @@ llamaRoute.get(function(req, res) {
 });
 
 //Add more routes here
+
+
+
+
+
+app.get('/api/users',helpenAPI.getUser);
+app.post('/api/users',helpenAPI.findAll);
+
+app.get('/api/users/:id',helpenAPI.getUserById);
+app.put('/api/users/:id',helpenAPI.findAll);
+app.delete('/api/users/:id',helpenAPI.findAll);
+
+app.get('/api/tasks',helpenAPI.findAll);
+app.post('/api/tasks',helpenAPI.findAll);
+
+app.get('/api/tasks/:id',helpenAPI.findAll);
+app.put('/api/tasks/:id',helpenAPI.findAll);
+app.delete('/api/tasks/:id',helpenAPI.findAll);
+
+
+
+
+
+
+
+
 
 // Start the server
 app.listen(port);
