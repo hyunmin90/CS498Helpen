@@ -1,6 +1,6 @@
 // Load required packages
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://hyunmin90:Alex1990@ds037407.mongolab.com:37407/steveapi');
+mongoose.connect('mongodb://helpen:helpen1990@ds039880.mongolab.com:39880/helpenapi');
 
 var bodyParser = require('body-parser');
 
@@ -12,8 +12,15 @@ var userSchema = new mongoose.Schema({
 , dateCreated : Date
 });
 
-var User = mongoose.model('User', userSchema);
+var subjectSchema = new mongoose.Schema({
+  name: String
+, description: String
+, instructor : String
+, semester : String
+});
 
+var User = mongoose.model('User', userSchema);
+var Subject = mongoose.model('Subject',subjectSchema);
 
 
 exports.findAll = function(req, res) {
@@ -24,6 +31,26 @@ exports.findById = function(req, res) {
     res.send({id:req.params.id, name: "The Name", description: "description"});
 };
 
+
+exports.getSubject = function(req,res){
+  
+  var jsonQuery=req.param('where');
+  
+  if(jsonQuery==null)
+    Subject.find({}, function (err, doc){
+    if (err) 
+      res.status(404)        // HTTP status 404: NotFound
+      .send('404 Not found Sadly By Steve "This is real 404 By the way. Check status code" '); 
+    else
+      res.send(doc);
+    });  
+  
+  if(jsonQuery!=null)
+    res.send({user:jsonQuery});
+  
+  
+
+};
 
 
 

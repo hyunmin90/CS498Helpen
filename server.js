@@ -49,6 +49,7 @@ llamaRoute.get(function(req, res) {
 
 
 
+app.get('/api/subjects',helpenAPI.getSubject);
 
 
 app.get('/api/users',helpenAPI.getUser);
