@@ -8,6 +8,29 @@ var subjectModel = require('./models/subject');
 
 var User = mongoose.model('User');
 var Subject = mongoose.model('Subject');
+var sockjs = require('sockjs');
+var http = require('http');
+
+
+var connections = [];
+
+var chat = sockjs.createServer();
+chat.on('connection', function(conn) {
+    connections.push(conn);
+    var number = connections.length;
+    conn.write("Welcome, User " + number);
+    conn.on('data', function(message) {
+        for (var ii=0; ii < connections.length; ii++) {
+            connections[ii].write("User " + number + " says: " + message);
+        }
+    });
+    conn.on('close', function() {
+        for (var ii=0; ii < connections.length; ii++) {
+            connections[ii].write("User " + number + " has disconnected");
+        }
+    });
+});
+
 
 
 //replace this with your Mongolab URL
@@ -15,6 +38,11 @@ mongoose.connect('mongodb://admin:admin@ds031952.mongolab.com:31952/helpen');
 
 // Create our Express application
 var app = express();
+
+var server = require('http').createServer(app); 
+
+
+chat.installHandlers(server, {prefix:'/chat'});
 
 // Use environment defined port or 4000
 var port = process.env.PORT || 4000;
@@ -37,6 +65,10 @@ app.use(bodyParser.urlencoded({
 
 app.use('/api', router);
 
+var server = require('http').createServer(app); 
+
+
+chat.installHandlers(server, {prefix:'/chat'});
 
 var homeRoute = router.route('/');
 var userRoute = router.route('/user');
@@ -123,6 +155,6 @@ loginRoute.post(function (req, res) {
 
 
 // Start the server
-app.listen(port);
+server.listen(port);
 console.log('Server running on port ' + port); 
 
