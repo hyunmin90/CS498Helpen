@@ -119,7 +119,7 @@ loginRoute.post(function (req, res) {
       res.status(200).json({message: "POST LOGIN SUCCESS", data: user});
     }
   });
-}
+});
 
 
 // Start the server
