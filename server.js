@@ -109,7 +109,7 @@ adduserRoute.post(function (req, res) {
 
 });
 
-loginRoute.post(function (req, res)) {
+loginRoute.post(function (req, res) {
   User.findOne({username: req.body.username}, function (err, user){
     if(err || user == null){
       return res.status(404).json({message: "POST LOGIN - Cannot find User", data: err});
