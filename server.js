@@ -1,4 +1,3 @@
-
 // Get the packages we need
 var express = require('express');
 var mongoose = require('mongoose');
@@ -42,6 +41,7 @@ app.use('/api', router);
 var homeRoute = router.route('/');
 var userRoute = router.route('/user');
 var adduserRoute = router.route('/user/adduser');
+var loginRoute = router.route('/login');
 
 homeRoute.get(function(req, res) {
   res.status(200)
@@ -108,6 +108,18 @@ adduserRoute.post(function (req, res) {
     }
 
 });
+
+loginRoute.post(function (req, res)) {
+  User.findOne({username: req.body.username}, function (err, user){
+    if(err || user == null){
+      return res.status(404).json({message: "POST LOGIN - Cannot find User", data: err});
+    } else if(user.password != req.body.password){
+      return res.status(500).json({message: "POST LOGIN - Password is incorrect", data: err});
+    } else {
+      res.status(200).json({message: "POST LOGIN SUCCESS", data: user});
+    }
+  });
+}
 
 
 // Start the server
