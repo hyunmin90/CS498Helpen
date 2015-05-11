@@ -158,7 +158,7 @@ loginRoute.post(function (req, res) {
 });
 
 
-reviewRoute.get(function(req, res) {
+reviewRoute.get(function (req, res) {
   var reviewQuery = req.query;
   var query = Review.find();
 
