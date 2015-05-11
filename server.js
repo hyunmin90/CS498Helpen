@@ -432,7 +432,9 @@ loginRoute.post(function (req, res) {
     } else if(user.password != req.body.password){
       return res.status(500).json({message: "POST LOGIN - Password is incorrect", data: err});
     } else {
-      if(req.body.location){
+      if(!req.body.location){
+        res.status(201).json({message: "POST LOGIN - Successfully logged in", data: user});
+      } else {
         user.location = req.body.location;
         user.save(function (err) {
           if(err){
@@ -441,10 +443,7 @@ loginRoute.post(function (req, res) {
             res.status(201).json({message: "POST LOGIN - Update user's location and successfully logged in", data: user});
           }
         });  
-      } else {
-        res.status(201).json({message: "POST LOGIN - Successfully logged in", data: user});
       }
-      
     }
   });
 });
