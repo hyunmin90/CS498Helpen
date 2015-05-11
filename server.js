@@ -206,7 +206,7 @@ addreviewRoute.post(function (req, res) {
       },
       {
         $group: {
-          buildingName: '$buildingName',
+          _id: '$buildingName',
           rating: {
             $avg: '$rating'
           }
