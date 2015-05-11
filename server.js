@@ -304,6 +304,7 @@ app.use('/api', router);
 var homeRoute = router.route('/');
 var userRoute = router.route('/user');
 var adduserRoute = router.route('/user/adduser');
+var addsubjectRoute = router.route('/user/addsubject');
 var loginRoute = router.route('/login');
 var reviewRoute = router.route('/review');
 var addblankreviewRoute = router.route('/review/addblankreviewform');
@@ -375,6 +376,31 @@ adduserRoute.post(function (req, res) {
   }
 });
 
+
+addsubjectRoute.post(function (req, res) {
+  if(!req.body.username || !req.body.subject){
+    res.status(500).json({message: "POST ADDSUBJECT - Subject name and Username is required"});
+  } else {
+    User.findOne({username: req.body.username}, function (err, user){
+      if(err || user == null){
+        return res.status(404).json({message: "POST ADDSUBJECT FAILED - User cannot be found", data: []});
+      } else {
+        user.subject = req.body.subject;
+        user.save(function (err){
+          if(err){
+            res.status(500).json({message: "POST ADDSUBJECT FAILED - Error occurred while updating subject"});
+          } else{
+            res.status(201).json({message: "POST ADDSUBJECT SUCCESS", data: user});
+          }
+        });
+      }
+    });
+  }
+});
+  
+
+
+
 loginRoute.post(function (req, res) {
   User.findOne({username: req.body.username}, function (err, user){
     if(err || user == null){
@@ -439,7 +465,7 @@ addreviewRoute.post(function (req, res) {
         return res.status(404).json({message: "POST ADDREVIEW FAILED - Building cannot be found", data: []});
       } else {
         review.rating = req.body.rating;
-        review.numberOfParticipant;
+        review.numberOfParticipant = req.body.numberOfParticipant;
         review.save(function (err) {
           if (err){
             res.status(500).json({message: "POST ADDREVIEW FAILED - Error occurred while updating rating or numberOfParticipant"});
@@ -453,7 +479,7 @@ addreviewRoute.post(function (req, res) {
 });
 
 findreviewRoute.post(function (req, res) { 
-  User.findOne({buildingId: req.body.buildingId}, function (err, review){ 
+  Review.findOne({buildingId: req.body.buildingId}, function (err, review){ 
     if(err || review == null){
       return res.status(404).json({message: "POST FINDREVIEW - Cannot find Review", data: err});
     } else {

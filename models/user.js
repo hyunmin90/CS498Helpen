@@ -20,6 +20,9 @@ var UserSchema = new Schema({
     	type: String,
     	required: 'Please provide a password'
     },
+    subject: {
+        type: String,
+    },
     dateCreated: { 
     	type: Date,
     	default: Date.now
