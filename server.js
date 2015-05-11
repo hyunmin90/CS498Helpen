@@ -400,7 +400,7 @@ addusersubjectRoute.post(function (req, res) {
         });
       }
     });
-
+    /*
     Subject.findOne({subjectId: req.body.subject}, function (err, subject) {
       if(err || subject == null){
         return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - Subject cannot be found from Subject Schema", data: []});
@@ -418,6 +418,7 @@ addusersubjectRoute.post(function (req, res) {
         });
       }
     });
+    */
   }
 });
   
