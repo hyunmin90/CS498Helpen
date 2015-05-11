@@ -401,7 +401,10 @@ reviewRoute.get(function (req, res) {
   });
 });
 
-
+addblankreviewRoute.options(function(req, res) {
+    res.writeHead(200);
+    res.end();
+});
 
 addblankreviewRoute.post(function (req, res) {
   if(!req.body.buildingName || !req.body.rating){
