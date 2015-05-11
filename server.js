@@ -9,6 +9,7 @@ var reviewModel = require('./models/review');
 
 var User = mongoose.model('User');
 var Subject = mongoose.model('Subject');
+
 var Review = mongoose.model('Review');
 var sockjs = require('sockjs');
 var http = require('http');
@@ -522,12 +523,14 @@ subjectRoute.get(function (req, res) {
 });
 
 addsubjectRoute.post(function (req, res) {
-  if(!req.body.subjectId){
+  if(!req.body.subjectId || !req.body.username){
       res.status(500).json({message: "POST SUBJECT/ADDSUBJECT - All fields must be filled out", data: []});
   } else {
     var subject = new Subject();
     subject.subjectId = req.body.subjectId;
-
+    subject.users.push({
+      username: req.body.username
+    });
     subject.save(function (err){
       if(err){
           if(err.code == 11000){

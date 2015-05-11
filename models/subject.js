@@ -5,13 +5,13 @@ var SubjectSchema = new Schema({
     subjectId: { 
     	type: String,
     	required: 'Please provide subject code or name',
-    	unique: 'This subject has already been created already'
+    	unique: 'Subject already exists'
     },
     users: [
     	{
     		username: {
     			type: String,
-    			unique: 'This username has already been used'
+    			unique: 'Username already exists'
     		}
     	}
     ]
