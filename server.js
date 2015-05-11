@@ -441,7 +441,7 @@ addreviewRoute.post(function (req, res) {
       console.log(err);
     }
   );
-
+/*
   var name = req.body.buildingName;
   Review.aggregate([
       { $match: { 
@@ -464,6 +464,7 @@ addreviewRoute.post(function (req, res) {
       console.log(result);
     }
   });
+*/
   /*
   if(!req.body.buildingName || !req.body.rating){
     res.status(500).json({message: "POST REVIEW - Please provide both building name and its rating", data: []});
