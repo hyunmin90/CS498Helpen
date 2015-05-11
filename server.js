@@ -390,14 +390,19 @@ addusersubjectRoute.post(function (req, res) {
       if(err || user == null){
         return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - User cannot be found from User Schema", data: []});
       } else {
-        user.subject = req.body.subject;
-        user.save(function (err){
-          if(err){
-            res.status(500).json({message: "POST USER/ADDSUBJECT FAILED - Error occurred while updating subject"});
-          } else{
-            res.status(201).json({message: "POST USER/ADDSUBJECT SUCCESS", data: user});
-          }
-        });
+        if(!req.body.subject){
+          user.subject = req.body.subject;
+          user.save(function (err){
+            if(err){
+              res.status(500).json({message: "POST LOGIN & USER/ADDSUBJECT FAILED - Error occurred while updating subject"});
+            } else{
+              res.status(201).json({message: "POST LOGIN & USER/ADDSUBJECT SUCCESS", data: user});
+            }
+          });
+        }
+        else{
+          res.status(201).json({message: "POST LOGIN SUCCESS", data: user});
+        }
       }
     });
     /*
