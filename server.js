@@ -390,19 +390,14 @@ addusersubjectRoute.post(function (req, res) {
       if(err || user == null){
         return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - User cannot be found from User Schema", data: []});
       } else {
-        if(!req.body.subject){
-          res.status(201).json({message: "POST LOGIN SUCCESS", data: user});
-        }
-        else{
-          user.subject = req.body.subject;
-          user.save(function (err){
-            if(err){
-              res.status(500).json({message: "POST LOGIN & USER/ADDSUBJECT FAILED - Error occurred while updating subject"});
-            } else{
-              res.status(201).json({message: "POST LOGIN & USER/ADDSUBJECT SUCCESS", data: user});
-            }
-          });
-        }
+        user.subject = req.body.subject;
+        user.save(function (err){
+          if(err){
+            res.status(500).json({message: "POST USER/ADDSUBJECT FAILED - Error occurred while updating subject"});
+          } else{
+            res.status(201).json({message: "POST USER/ADDSUBJECT SUCCESS", data: user});
+          }
+        });
       }
     });
     /*
@@ -437,14 +432,19 @@ loginRoute.post(function (req, res) {
     } else if(user.password != req.body.password){
       return res.status(500).json({message: "POST LOGIN - Password is incorrect", data: err});
     } else {
-      user.location = req.body.location;
-      user.save(function (err) {
-        if(err){
-          res.status(500).json({message: "POST LOGIN - Cannot update user's location", data: err});
-        } else {
-          res.status(201).json({message: "POST LOGIN - Update user's location and successfully logged in", data: user});
-        }
-      });
+      if(req.body.location){
+        user.location = req.body.location;
+        user.save(function (err) {
+          if(err){
+            res.status(500).json({message: "POST LOGIN - Cannot update user's location", data: err});
+          } else {
+            res.status(201).json({message: "POST LOGIN - Update user's location and successfully logged in", data: user});
+          }
+        });  
+      } else {
+        res.status(201).json({message: "POST LOGIN - Successfully logged in", data: user});
+      }
+      
     }
   });
 });
