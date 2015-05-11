@@ -410,7 +410,7 @@ addblankreviewRoute.post(function (req, res) {
     var review = new Review();
     review.buildingName = req.body.buildingName;
     review.rating = req.body.rating;
-    review.numberOfParticipant = 1;
+    review.numberOfParticipant = req.body.numberOfParticipant;
 
     review.save(function (err){
       if(err){
