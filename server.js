@@ -432,7 +432,14 @@ loginRoute.post(function (req, res) {
     } else if(user.password != req.body.password){
       return res.status(500).json({message: "POST LOGIN - Password is incorrect", data: err});
     } else {
-      res.status(200).json({message: "POST LOGIN SUCCESS", data: user});
+      user.location = req.body.location;
+      user.save(function (err) {
+        if(err){
+          res.status(500).json({message: "POST LOGIN - Cannot update user's location", data: err});
+        } else {
+          res.status(201).json({message: "POST LOGIN - Update user's location and successfully logged in", data: user});
+        }
+      });
     }
   });
 });

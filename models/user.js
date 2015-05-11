@@ -26,6 +26,9 @@ var UserSchema = new Schema({
     dateCreated: { 
     	type: Date,
     	default: Date.now
+    },
+    location: {
+        type: String
     }
 });
 
