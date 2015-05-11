@@ -78,7 +78,7 @@ var adduserRoute = router.route('/user/adduser');
 var loginRoute = router.route('/login');
 var reviewRoute = router.route('/review');
 var addblankreviewRoute = router.route('/review/addblankreviewform');
-var addreviewRoute = router.route('/reveiw/addreview');
+var addreviewRoute = router.route('/review/addreview');
 
 homeRoute.get(function(req, res) {
   res.status(200)
@@ -198,9 +198,10 @@ addblankreviewRoute.post(function (req, res) {
 });
 
 addreviewRoute.post(function (req, res) {
+  var name = req.body.buildingName;
   Review.aggregate([
       { $match: { 
-          buildingName: req.body.buildingName
+          buildingName: name
         }
       },
       {
