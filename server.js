@@ -390,7 +390,10 @@ addusersubjectRoute.post(function (req, res) {
       if(err || user == null){
         return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - User cannot be found from User Schema", data: []});
       } else {
-        if(req.body.subject){
+        if(!req.body.subject){
+          res.status(201).json({message: "POST LOGIN SUCCESS", data: user});
+        }
+        else{
           user.subject = req.body.subject;
           user.save(function (err){
             if(err){
@@ -399,9 +402,6 @@ addusersubjectRoute.post(function (req, res) {
               res.status(201).json({message: "POST LOGIN & USER/ADDSUBJECT SUCCESS", data: user});
             }
           });
-        }
-        else{
-          res.status(201).json({message: "POST LOGIN SUCCESS", data: user});
         }
       }
     });
