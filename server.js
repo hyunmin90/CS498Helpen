@@ -76,6 +76,7 @@ var homeRoute = router.route('/');
 var userRoute = router.route('/user');
 var adduserRoute = router.route('/user/adduser');
 var loginRoute = router.route('/login');
+var reviewRoute = router.route('/review');
 var addblankreviewRoute = router.route('/review/addblankreviewform');
 var addreviewRoute = router.route('/reveiw/addreview');
 
@@ -153,6 +154,21 @@ loginRoute.post(function (req, res) {
     } else {
       res.status(200).json({message: "POST LOGIN SUCCESS", data: user});
     }
+  });
+});
+
+
+reviewRoute.get(function(req, res) {
+  var reviewQuery = req.query;
+  var query = Review.find();
+
+  query.exec(function(err, reviews) {
+    if (err) {
+      res.status(500);
+      res.send({ message: "GET REVIEW FAILED", data: err });
+    }
+    res.status(200);
+    res.json({ message: "GET REVIEW SUCCESS", data: reviews });
   });
 });
 
