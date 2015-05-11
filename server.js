@@ -304,24 +304,28 @@ app.use('/api', router);
 var homeRoute = router.route('/');
 var userRoute = router.route('/user');
 var adduserRoute = router.route('/user/adduser');
-var addsubjectRoute = router.route('/user/addsubject');
+var addusersubjectRoute = router.route('/user/addsubject');
 var loginRoute = router.route('/login');
+
 var reviewRoute = router.route('/review');
 var addblankreviewRoute = router.route('/review/addblankreviewform');
 var addreviewRoute = router.route('/review/addreview');
 var findreviewRoute = router.route('/review/findreview');
 
-homeRoute.get(function(req, res) {
+var subjectRoute = router.route('/subject');
+var addsubjectRoute = router.route('/subject/addsubject');
+
+homeRoute.get(function (req, res) {
   res.status(200)
   res.json({ message: 'RESTFUL API' });
 });
 
-userRoute.options(function(req, res) {
+userRoute.options(function (req, res) {
     res.writeHead(200);
     res.end();
 });
 
-userRoute.get(function(req, res) {
+userRoute.get(function (req, res) {
 	var userQuery = req.query;
 	var query = User.find();
 
@@ -377,21 +381,39 @@ adduserRoute.post(function (req, res) {
 });
 
 
-addsubjectRoute.post(function (req, res) {
+addusersubjectRoute.post(function (req, res) {
   if(!req.body.username || !req.body.subject){
     res.status(500).json({message: "POST ADDSUBJECT - Subject name and Username is required"});
   } else {
     User.findOne({username: req.body.username}, function (err, user){
       if(err || user == null){
-        return res.status(404).json({message: "POST ADDSUBJECT FAILED - User cannot be found", data: []});
+        return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - User cannot be found from User Schema", data: []});
       } else {
         user.subject = req.body.subject;
         user.save(function (err){
           if(err){
-            res.status(500).json({message: "POST ADDSUBJECT FAILED - Error occurred while updating subject"});
+            res.status(500).json({message: "POST USER/ADDSUBJECT FAILED - Error occurred while updating subject"});
           } else{
-            res.status(201).json({message: "POST ADDSUBJECT SUCCESS", data: user});
+            res.status(201).json({message: "POST USER/ADDSUBJECT SUCCESS", data: user});
           }
+        });
+      }
+    });
+
+    Subject.findOne({subjectId: req.body.subject}, function (err, subject) {
+      if(err || subject == null){
+        return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - Subject cannot be found from Subject Schema", data: []});
+      } else {
+        subject.users.push({
+          username: req.body.username
+        });
+        subject.save(function (err) {
+          if(err){
+            res.status(500).json({message: "POST USER/ADDSUBJECT FAILED - Username cannt be added to Subject Schema"});
+          } else {
+            res.status(201).json({message: "POST USER/ADDSUBJECT SUCCESS - Username successfully added to Subject Schema", data: subject.users});
+          }
+
         });
       }
     });
@@ -428,24 +450,21 @@ reviewRoute.get(function (req, res) {
   });
 });
 
-addblankreviewRoute.options(function(req, res) {
-    res.writeHead(200);
-    res.end();
-});
 
 addblankreviewRoute.post(function (req, res) {
-  if(!req.body.buildingId || !req.body.rating){
+  if(!req.body.buildingId || !req.body.rating || !req.body.numberOfParticipant){
       res.status(500).json({message: "POST ADDREVIEWBLANK - Please provide building name and its rating", data: []});
   } else {
     var review = new Review();
     review.buildingId = req.body.buildingId;
     review.rating = req.body.rating;
     review.numberOfParticipant = req.body.numberOfParticipant;
-
+    console.log(review);
     review.save(function (err){
       if(err){
-          if(err.code == 11000){
-              res.status(500).json({message: "POST ADDREVIEWBLANK FAILED - Building name already exists"});
+          if(err.code == 11000){    
+              console.log(err);
+              res.status(500).json({message: "POST ADDREVIEWBLANK FAILED - Building name already exists", data: err});
           } else {
               res.status(500).json({message: "POST ADDREVIEWBLANK FAILED", data: err});
           }
@@ -488,6 +507,42 @@ findreviewRoute.post(function (req, res) {
   });
 });
 
+subjectRoute.get(function (req, res) {
+  var subjectQuery = req.query;
+  var query = Subject.find();
+
+  query.exec(function (err, subjects) {
+    if (err) {
+      res.status(500);
+      res.send({ message: "GET SUBJECT FAILED", data: err });
+    }
+    res.status(200);
+    res.json({ message: "GET SUBJECT SUCCESS", data: subjects });
+  });
+});
+
+addsubjectRoute.post(function (req, res) {
+  if(!req.body.subjectId){
+      res.status(500).json({message: "POST SUBJECT/ADDSUBJECT - All fields must be filled out", data: []});
+  } else {
+    var subject = new Subject();
+    subject.subjectId = req.body.subjectId;
+
+    subject.save(function (err){
+      if(err){
+          if(err.code == 11000){
+              console.log(err);
+              res.status(500).json({message: "POST SUBJECT/ADDUSER FAILED - Subject already exists"});
+          } else {
+              res.status(500).json({message: "POST SUBJECT/ADDUSER FAILED", data: err});
+
+          }
+      } else{
+          res.status(201).json({message: "SUBJECT/ADDUSER SUCCESS", data:subject});
+      }
+    });
+  }
+});
 
 
 

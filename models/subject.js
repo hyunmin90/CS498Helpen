@@ -2,20 +2,19 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
 
 var SubjectSchema = new Schema({
-    subjectCode: { 
+    subjectId: { 
     	type: String,
-    	required: 'Please provide course code'
+    	required: 'Please provide subject code or name',
+    	unique: 'This subject has already been created already'
     },
-    subjectNumber: {
-    	type: String,
-    	required: 'Please provide course number'
-    },
-    instructor: {
-    	type: String
-    },
-    description: {
-    	type: String
-    }
+    users: [
+    	{
+    		username: {
+    			type: String,
+    			unique: 'This username has already been used'
+    		}
+    	}
+    ]
 });
 
 mongoose.model('Subject', SubjectSchema);

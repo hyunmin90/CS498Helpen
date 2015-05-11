@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 var ReviewSchema = new Schema({
 	buildingId: {
 		type: String,
-		requird: 'Please provide the building name',
+		required: 'Please provide the building name',
 		unique: 'Same building name exist'
 	},
 	rating: {
