@@ -308,8 +308,8 @@ var addusersubjectRoute = router.route('/user/addsubject');
 var loginRoute = router.route('/login');
 
 var reviewRoute = router.route('/review');
-var addblankreviewRoute = router.route('/review/addblankreviewform');
 var addreviewRoute = router.route('/review/addreview');
+var updatereviewRoute = router.route('/review/updatereview');
 var findreviewRoute = router.route('/review/findreview');
 
 var subjectRoute = router.route('/subject');
@@ -451,9 +451,9 @@ reviewRoute.get(function (req, res) {
 });
 
 
-addblankreviewRoute.post(function (req, res) {
+addreviewRoute.post(function (req, res) {
   if(!req.body.buildingId || !req.body.rating || !req.body.numberOfParticipant){
-      res.status(500).json({message: "POST ADDREVIEWBLANK - Please provide building name and its rating", data: []});
+      res.status(500).json({message: "POST ADDREVIEW - Please provide building name and its rating", data: []});
   } else {
     var review = new Review();
     review.buildingId = req.body.buildingId;
@@ -464,32 +464,32 @@ addblankreviewRoute.post(function (req, res) {
       if(err){
           if(err.code == 11000){    
               console.log(err);
-              res.status(500).json({message: "POST ADDREVIEWBLANK FAILED - Building name already exists", data: err});
+              res.status(500).json({message: "POST ADDREVIEW FAILED - Building name already exists", data: err});
           } else {
-              res.status(500).json({message: "POST ADDREVIEWBLANK FAILED", data: err});
+              res.status(500).json({message: "POST ADDREVIEW FAILED", data: err});
           }
       } else {
-          res.status(201).json({message: "POST ADDREVIEWBLANK SUCCESS", data:review});
+          res.status(201).json({message: "POST ADDREVIEW SUCCESS", data:review});
       }
     });
   }
 });
 
-addreviewRoute.post(function (req, res) {
+updateReivew.post(function (req, res) {
   if(!req.body.buildingId || !req.body.rating || ! req.body.numberOfParticipant){
-    res.status(500).json({message: "POST ADDREVIEW FAILED - All fields are required", data:[]});
+    res.status(500).json({message: "POST UPDATEREVIEW FAILED - All fields are required", data:[]});
   } else {
     Review.findOne({buildingId: req.body.buildingId}, function (err, review){
       if(err || review == null){
-        return res.status(404).json({message: "POST ADDREVIEW FAILED - Building cannot be found", data: []});
+        return res.status(404).json({message: "POST UPDATEREVIEW FAILED - Building cannot be found", data: []});
       } else {
         review.rating = req.body.rating;
         review.numberOfParticipant = req.body.numberOfParticipant;
         review.save(function (err) {
           if (err){
-            res.status(500).json({message: "POST ADDREVIEW FAILED - Error occurred while updating rating or numberOfParticipant"});
+            res.status(500).json({message: "POST UPDATEREVIEW FAILED - Error occurred while updating rating or numberOfParticipant"});
           } else{
-            res.status(201).json({message: "POST ADDREVIEW SUCCESS", data: review})
+            res.status(201).json({message: "POST UPDATEREVIEW SUCCESS", data: review})
           }
         });
       }
