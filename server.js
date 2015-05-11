@@ -308,6 +308,7 @@ var loginRoute = router.route('/login');
 var reviewRoute = router.route('/review');
 var addblankreviewRoute = router.route('/review/addblankreviewform');
 var addreviewRoute = router.route('/review/addreview');
+var findreviewRoute = router.route('/review/findreview');
 
 homeRoute.get(function(req, res) {
   res.status(200)
@@ -407,13 +408,13 @@ addblankreviewRoute.options(function(req, res) {
 });
 
 addblankreviewRoute.post(function (req, res) {
-  if(!req.body.buildingName || !req.body.rating){
+  if(!req.body.buildingId || !req.body.rating){
       res.status(500).json({message: "POST ADDREVIEWBLANK - Please provide building name and its rating", data: []});
   } else {
     var review = new Review();
-    review.buildingName = req.body.buildingName;
+    review.buildingId = req.body.buildingId;
     review.rating = req.body.rating;
-    review.numberOfParticipant = 1;
+    review.numberOfParticipant = req.body.numberOfParticipant;
 
     review.save(function (err){
       if(err){
@@ -421,86 +422,47 @@ addblankreviewRoute.post(function (req, res) {
               res.status(500).json({message: "POST ADDREVIEWBLANK FAILED - Building name already exists"});
           } else {
               res.status(500).json({message: "POST ADDREVIEWBLANK FAILED", data: err});
-
           }
-      } else{
-          res.status(201).json({message: "POST ADDREVIEWBLANK SUCCESS", data:user});
+      } else {
+          res.status(201).json({message: "POST ADDREVIEWBLANK SUCCESS", data:review});
       }
     });
   }
 });
 
 addreviewRoute.post(function (req, res) {
-  Review.update(
-    { _id: req.body.buildingName },
-    {
-       //"$set": { "lastLoginTime": new Date() },
-       "$inc": { "numberOfParticipant": 1 }
-    },
-    function(err,numaffected) {
-      console.log(err);
-    }
-  );
-/*
-  var name = req.body.buildingName;
-  Review.aggregate([
-      { $match: { 
-          buildingName: name
-        }
-      },
-      {
-        $group: {
-          _id: '$buildingName',
-          rating: {
-            $avg: '$rating'
-          }
-        }
-      }
-    ], function (err, result){
-    if(err) {
-      console.log(err);
-    }
-    else{
-      console.log(result);
-    }
-  });
-*/
-  /*
-  if(!req.body.buildingName || !req.body.rating){
-    res.status(500).json({message: "POST REVIEW - Please provide both building name and its rating", data: []});
+  if(!req.body.buildingId || !req.body.rating || ! req.body.numberOfParticipant){
+    res.status(500).json({message: "POST ADDREVIEW FAILED - All fields are required", data:[]});
   } else {
-    Review.findOne({buildingName: req.body.buildingName}, function (err, review){
+    Review.findOne({buildingId: req.body.buildingId}, function (err, review){
       if(err || review == null){
-          return res.status(404).json({message: "POST USER - Cannot find User", data: err});
+        return res.status(404).json({message: "POST ADDREVIEW FAILED - Building cannot be found", data: []});
       } else {
-          res.status(200).json({message: "POST USER SUCCESS", data: user});
-      }
-  });
-
-    var review = new Review();
-    review.buildingName = req.body.buildingName;
-    var avgRating = req.body.review + 
-
-    review.rating = req.body.review;
-    review.numberOfParticipant = review.numberOfParticipant;
-
-    user.save(function(err){
-      if(err){
-          if(err.code == 11000){
-              res.status(500).json({message: "POST ADDUSER FAILED - Username is not unique"});
-          } else {
-              res.status(500).json({message: "POST ADDUSER FAILED", data: err});
-
+        review.rating = req.body.rating;
+        review.numberOfParticipant;
+        review.save(function (err) {
+          if (err){
+            res.status(500).json({message: "POST ADDREVIEW FAILED - Error occurred while updating rating or numberOfParticipant"});
+          } else{
+            res.status(201).json({message: "POST ADDREVIEW SUCCESS", data: review})
           }
-      } else{
-          res.status(201).json({message: "ADDUSER SUCCESS", data:user});
+        });
       }
     });
   }
-  */
-
-
 });
+
+findreviewRoute.post(function (req, res) { 
+  User.findOne({buildingId: req.body.buildingId}, function (err, review){ 
+    if(err || review == null){
+      return res.status(404).json({message: "POST FINDREVIEW - Cannot find Review", data: err});
+    } else {
+      res.status(200).json({message: "POST FINDREVIEW SUCCESS", data: review});
+    }
+  });
+});
+
+
 
 
 // Start the server
