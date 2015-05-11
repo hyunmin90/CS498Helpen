@@ -390,7 +390,7 @@ addusersubjectRoute.post(function (req, res) {
       if(err || user == null){
         return res.status(404).json({message: "POST USER/ADDSUBJECT FAILED - User cannot be found from User Schema", data: []});
       } else {
-        if(!req.body.subject){
+        if(req.body.subject){
           user.subject = req.body.subject;
           user.save(function (err){
             if(err){
