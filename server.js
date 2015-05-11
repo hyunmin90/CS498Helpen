@@ -427,6 +427,17 @@ addblankreviewRoute.post(function (req, res) {
 });
 
 addreviewRoute.post(function (req, res) {
+  Review.update(
+    { _id: req.body.buildingName },
+    {
+       //"$set": { "lastLoginTime": new Date() },
+       "$inc": { "numberOfParticipant": 1 }
+    },
+    function(err,numaffected) {
+
+    }
+  );
+
   var name = req.body.buildingName;
   Review.aggregate([
       { $match: { 

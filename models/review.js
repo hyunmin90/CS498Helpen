@@ -12,6 +12,10 @@ var ReviewSchema = new Schema({
 		required: 'Please provide the rating',
 		min: 1,
 		max: 10
+	},
+	numberOfParticipant: {
+		type: Number,
+		min: 1
 	}
 });
 
