@@ -475,7 +475,7 @@ addreviewRoute.post(function (req, res) {
   }
 });
 
-updateReivew.post(function (req, res) {
+updatereviewRoute.post(function (req, res) {
   if(!req.body.buildingId || !req.body.rating || ! req.body.numberOfParticipant){
     res.status(500).json({message: "POST UPDATEREVIEW FAILED - All fields are required", data:[]});
   } else {
